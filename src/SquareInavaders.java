@@ -37,7 +37,9 @@ public class SquareInavaders extends JComponent implements KeyListener {
     //player position varibles
     int moveX = 0;
     int moveY = 0;
-    
+    //bullet posistion variable
+    int positionY = 520;
+    int positionX = player.x + 15;
     //create rectangle array list for the enemy squares
     ArrayList<Rectangle> blocks = new ArrayList<>();
     //add image for array (enemy)
@@ -45,7 +47,8 @@ public class SquareInavaders extends JComponent implements KeyListener {
     //add image for player (ship)
     BufferedImage ship2 = loadImage("ship2.jpg");
     
-    
+    //create array for player bullets
+    ArrayList<Rectangle> bullet = new ArrayList<>();
     //method to import images
     public BufferedImage loadImage(String file){
         BufferedImage img = null;
@@ -82,10 +85,11 @@ public class SquareInavaders extends JComponent implements KeyListener {
         //if shoot, bullet is drawn
         if (shoot){
             g.setColor(Color.yellow);
-            g.fillRect(player.x + 15, player.y, 10, 10);
+            g.fillRect(positionX, positionY, 10, 10);
             
         }
-   
+        //if player bullet hits enemy
+        
         // GAME DRAWING ENDS HERE
     }
 
@@ -119,6 +123,9 @@ public class SquareInavaders extends JComponent implements KeyListener {
         blocks.add(new Rectangle(360, 100, 40, 40));
         blocks.add(new Rectangle(470, 100, 40, 40));
         blocks.add(new Rectangle(580, 100, 40, 40));
+        
+        //add player bullet
+        bullet.add(new Rectangle (positionX, positionY, 10, 10));
         // Used to keep track of time used to draw and update the game
         // This is used to limit the framerate later on
         long startTime;
@@ -148,9 +155,7 @@ public class SquareInavaders extends JComponent implements KeyListener {
             player.x = player.x + moveX;
             
             
-            int numBlocks = blocks.size();
-            int randInt = (int)(Math.random()*numBlocks);
-            Rectangle aBlock = blocks.get(randInt);
+            
             
             
             //make player stop at edges of screen
@@ -170,14 +175,31 @@ public class SquareInavaders extends JComponent implements KeyListener {
                 
                 
             }
+            //when shoot is true
             if (shoot){
+                positionX = player.x + 15;
                 
+                for (Rectangle block : bullet){
+                    positionY--;
+                    positionY--;
+                    positionY--;
+                    
+                    if (positionY < 0){
+                        shoot = false;
+                    }
+                }
                 
                 
             }
             
             //move 
-
+            int numBlocks = blocks.size();
+            int randInt = (int)(Math.random()*numBlocks);
+            Rectangle aBlock = blocks.get(randInt);
+            
+            
+            
+            
             // GAME LOGIC ENDS HERE 
 
             // update the drawing (calls paintComponent)
@@ -229,7 +251,10 @@ public class SquareInavaders extends JComponent implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-        
+        int key = e.getKeyCode();
+        if (key == KeyEvent.VK_SPACE){
+            shoot = true;
+        }
         
     }
 
@@ -239,11 +264,10 @@ public class SquareInavaders extends JComponent implements KeyListener {
         if (key == KeyEvent.VK_LEFT) {
             left = true;
         } else if (key == KeyEvent.VK_RIGHT) {
-            right = true;
-        } else if (key == KeyEvent.VK_SPACE) {
+            right = true;       
+        } else if (key == KeyEvent.VK_SPACE){
             shoot = true;
-        }
-    }
+    }}
 
     @Override
     public void keyReleased(KeyEvent e) {
@@ -252,8 +276,7 @@ public class SquareInavaders extends JComponent implements KeyListener {
             left = false;
         } else if (key == KeyEvent.VK_RIGHT) {
             right = false;
-        } else if (key == KeyEvent.VK_SPACE) {
-            shoot = false;
+        
         }
     }
 }
