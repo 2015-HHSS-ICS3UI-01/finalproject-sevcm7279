@@ -8,6 +8,7 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -37,8 +38,7 @@ public class SquareInavaders extends JComponent implements KeyListener {
     //player position varibles
     int moveX = 0;
     int moveY = 0;
-    //bullet posistion variable
-    int positionY = 520;
+    //bullet posistion variable   
     int positionX = player.x + 15;
     //create rectangle array list for the enemy squares
     ArrayList<Rectangle> blocks = new ArrayList<>();
@@ -46,21 +46,23 @@ public class SquareInavaders extends JComponent implements KeyListener {
     BufferedImage alien = loadImage("alien.png");
     //add image for player (ship)
     BufferedImage ship2 = loadImage("ship2.jpg");
-    
     //create array for player bullets
-    ArrayList<Rectangle> bullet = new ArrayList<>();
+    Rectangle bullet = new Rectangle(positionX, -10, 10, 10);
+    //create an array for enemy bullet
+    Rectangle bulletE = new Rectangle(-10, -10, 10, 10);
     //method to import images
-    public BufferedImage loadImage(String file){
+
+    public BufferedImage loadImage(String file) {
         BufferedImage img = null;
-        try{
+        try {
             img = ImageIO.read(new File(file));
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("Error reading picture " + file);
         }
         return img;
-                
+
     }
-    
+
     // drawing of the game happens in here
     // we use the Graphics object, g, to perform the drawing
     // NOTE: This is already double buffered!(helps with framerate/speed)
@@ -74,22 +76,28 @@ public class SquareInavaders extends JComponent implements KeyListener {
         //black background
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, 800, 600);
+        
+        //make the blocks in the enemy array an image
         for (Rectangle block : blocks) {
             g.drawImage(alien, block.x, block.y, block.width, block.height, null);
         }
-        //put player on screen
-        //make the player blue
-        g.setColor(Color.BLUE);
+        //put player on screen (as an image)
         g.drawImage(ship2, player.x, player.y, player.width, player.height, null);
-        
-        //if shoot, bullet is drawn
-        if (shoot){
+
+        //if shoot, player bullet is drawn
+        if (shoot) {
+            //set the bullet colour to yellow
             g.setColor(Color.yellow);
-            g.fillRect(positionX, positionY, 10, 10);
-            
+            //draw th player bullet
+            g.fillRect(bullet.x, bullet.y, 10, 10);
+
         }
-        //if player bullet hits enemy
-        
+        //draw the enemy bullet of the screen
+        //set color of enemy bullet to red
+        g.setColor(Color.red);
+        //draw the enemy bulllet
+        g.fillRect(bulletE.x, bullet.y, 10, 10);
+
         // GAME DRAWING ENDS HERE
     }
 
@@ -123,9 +131,8 @@ public class SquareInavaders extends JComponent implements KeyListener {
         blocks.add(new Rectangle(360, 100, 40, 40));
         blocks.add(new Rectangle(470, 100, 40, 40));
         blocks.add(new Rectangle(580, 100, 40, 40));
-        
-        //add player bullet
-        bullet.add(new Rectangle (positionX, positionY, 10, 10));
+
+
         // Used to keep track of time used to draw and update the game
         // This is used to limit the framerate later on
         long startTime;
@@ -144,27 +151,27 @@ public class SquareInavaders extends JComponent implements KeyListener {
             //move player left
             if (left) {
                 moveX = -5;
-            //move player right
+                //move player right
             } else if (right) {
                 moveX = 5;
-            //stop player when key released  
+                //stop player when key released  
             } else {
                 moveX = 0;
             }
             //add x movements to player
             player.x = player.x + moveX;
-            
-            
-            
-            
-            
+
+
+
+
+
             //make player stop at edges of screen
             //if player reaches right side
-            if (player.x + player.width > WIDTH){
+            if (player.x + player.width > WIDTH) {
                 player.x = WIDTH - player.width;
                 moveX = 0;
-            //if player reaches left side
-            } else if (player.x < 0){
+                //if player reaches left side
+            } else if (player.x < 0) {
                 player.x = 0;
                 moveX = 0;
             }
@@ -174,32 +181,54 @@ public class SquareInavaders extends JComponent implements KeyListener {
                 
                 
                 
+                                  
+                
             }
             //when shoot is true
-            if (shoot){
-                positionX = player.x + 15;
-                
-                for (Rectangle block : bullet){
-                    positionY--;
-                    positionY--;
-                    positionY--;
-                    
-                    if (positionY < 0){
-                        shoot = false;
-                    }
+            if (shoot) {
+                //if the bullet is not off the screen
+                //bullet starts at player
+                if (bullet.y <= -10) {
+                    bullet.x = player.x + 15;
+                    bullet.y = player.y;
                 }
-                
+                //bullet keeps player x coordinate
+                //bullet moves up
+                bullet.y -= 3;
+
+            }
+            //if the bulletn is off the screen
+            //make shooting false so player can shoot agian
+            if (bullet.y < -9) {
+                shoot = false;
                 
             }
             
-            //move 
+            //intersections
+            //go through the enemy array
+            Iterator<Rectangle> it = blocks.iterator();
+            while (it.hasNext()){
+                Rectangle block = it.next();
+                //is the bullet impacting an enemy
+                if (bullet.intersects(block)){
+                    //make shooting to false
+                    //delete enemy
+                    shoot = false;
+                    bullet.y = -10;
+                    it.remove();
+                }
+            }
+
+            //select a random block in the enemy array
             int numBlocks = blocks.size();
-            int randInt = (int)(Math.random()*numBlocks);
+            int randInt = (int) (Math.random() * numBlocks);
             Rectangle aBlock = blocks.get(randInt);
-            
-            
-            
-            
+            //when it is selected, shoot
+            bulletE.y = aBlock.y;
+
+
+
+
             // GAME LOGIC ENDS HERE 
 
             // update the drawing (calls paintComponent)
@@ -252,10 +281,8 @@ public class SquareInavaders extends JComponent implements KeyListener {
     @Override
     public void keyTyped(KeyEvent e) {
         int key = e.getKeyCode();
-        if (key == KeyEvent.VK_SPACE){
-            shoot = true;
-        }
-        
+
+
     }
 
     @Override
@@ -264,10 +291,11 @@ public class SquareInavaders extends JComponent implements KeyListener {
         if (key == KeyEvent.VK_LEFT) {
             left = true;
         } else if (key == KeyEvent.VK_RIGHT) {
-            right = true;       
-        } else if (key == KeyEvent.VK_SPACE){
+            right = true;
+        } else if (key == KeyEvent.VK_SPACE) {
             shoot = true;
-    }}
+        }
+    }
 
     @Override
     public void keyReleased(KeyEvent e) {
@@ -276,7 +304,7 @@ public class SquareInavaders extends JComponent implements KeyListener {
             left = false;
         } else if (key == KeyEvent.VK_RIGHT) {
             right = false;
-        
+
         }
     }
 }
