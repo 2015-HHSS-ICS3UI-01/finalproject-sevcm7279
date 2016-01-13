@@ -218,7 +218,7 @@ public class SquareInavaders extends JComponent implements KeyListener {
 
             //select a random block in the enemy array
             if (bulletE.y <= 610) {                
-                bulletE.y += 20;
+                bulletE.y += 4;
                 
                 if (enemyShoot == false) {
                     int numBlocks = blocks.size();
