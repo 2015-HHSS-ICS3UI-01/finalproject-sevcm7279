@@ -227,10 +227,14 @@ public class SquareInavaders extends JComponent implements KeyListener {
                     //when it is selected, shoot
                     enemyShoot = true;
                     //set the coordinates of the bullet to 
-                    //the centre of the alien
+                    //centre of the alien
                     bulletE.y = aBlock.y;
                     bulletE.x = aBlock.x + 15;
-                  
+                  //enemy bullet hitting player
+            if (bulletE.intersects(player)){
+                player.y +=100;
+                enemyShoot = true;
+                }
              //if the bullet goes off the screen       
                 } else if (bulletE.y >= 611) {
                     enemyShoot = false;
@@ -238,7 +242,15 @@ public class SquareInavaders extends JComponent implements KeyListener {
                 }
 
             }
-
+            
+            //enemy bullet hitting player
+            if (bulletE.intersects(player)){
+                player.y +=100;
+                bulletE.y = -90;
+                bulletE.x = 0;
+                }
+            
+    
 
 
             // GAME LOGIC ENDS HERE 
