@@ -56,10 +56,14 @@ public class SquareInavaders extends JComponent implements KeyListener {
     //create an array for enemy bullet
     Rectangle bulletE = new Rectangle(0, 610, 10, 10);
     //add backround image
-    BufferedImage galaxy = loadImage ("galaxy.jpg");
+    BufferedImage galaxy = loadImage ("stars.gif");
+    //add array for other enemy bullets
     
     
+    //enemy is not shooting
     boolean enemyShoot = false;
+    //enemy is not attacking
+    boolean attack = false;
     //method to import images
 
     public BufferedImage loadImage(String file) {
@@ -183,7 +187,25 @@ public class SquareInavaders extends JComponent implements KeyListener {
             player.x = player.x + moveX;
 
 
-
+            //animate enemy array
+            //select a random alien to approach player
+            
+            int numeBlocks = blocks.size();
+            int randomInt = (int) (Math.random() * numeBlocks);
+            Rectangle eBlock = blocks.get(randomInt);
+            
+                //make alien follow player
+            if (eBlock.y != 450){
+                eBlock.y +=4;
+                attack = true;
+                if (eBlock.x > player.x){
+                    eBlock.x --;                   
+                } else {
+                    eBlock.x ++;
+                }
+            }
+            
+            
 
 
             //make player stop at edges of screen
@@ -237,7 +259,7 @@ public class SquareInavaders extends JComponent implements KeyListener {
 
             //select a random block in the enemy array
             if (bulletE.y <= 610) {                
-                bulletE.y += 20;
+                bulletE.y += 10;
                 
                 if (enemyShoot == false) {
                     int numBlocks = blocks.size();
@@ -276,8 +298,13 @@ public class SquareInavaders extends JComponent implements KeyListener {
                 bulletE.x = 0;
                 }
             
-    
-
+           
+            
+            
+                
+            
+            
+            
 
             // GAME LOGIC ENDS HERE 
 
