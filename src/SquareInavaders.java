@@ -7,11 +7,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 
 
 /**
@@ -70,8 +74,17 @@ public class SquareInavaders extends JComponent implements KeyListener {
     }
     
     //create a method to import music
+    public static void play(){
+        try {
+        String Pump = "BGM.wav";
+        InputStream in = new FileInputStream("BGM.wav");    
+        AudioStream audioStream = new AudioStream(in);
+        AudioPlayer.player.start(audioStream);
+        } catch (Exception e) {}
+        
+        
+    }
     
-
     // drawing of the game happens in here
     // we use the Graphics object, g, to perform the drawing
     // NOTE: This is already double buffered!(helps with framerate/speed)
