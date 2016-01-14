@@ -200,7 +200,7 @@ public class SquareInavaders extends JComponent implements KeyListener {
                 bullet.y -= 10;
 
             }
-            //if the bulletn is off the screen
+            //if the bullet is off the screen
             //make shooting false so player can shoot agian
             if (bullet.y < -9) {
                 shoot = false;
@@ -237,8 +237,11 @@ public class SquareInavaders extends JComponent implements KeyListener {
                     bulletE.y = aBlock.y;
                     bulletE.x = aBlock.x + 15;
                   //enemy bullet hitting player
+                    
             if (bulletE.intersects(player)){
                 player.y +=100;
+                
+                
                 enemyShoot = true;
                 }
              //if the bullet goes off the screen       
