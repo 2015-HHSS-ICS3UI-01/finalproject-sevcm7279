@@ -17,7 +17,6 @@ import javax.swing.JFrame;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
 
-
 /**
  *
  * @author sevcm7279
@@ -54,12 +53,10 @@ public class SquareInavaders extends JComponent implements KeyListener {
     //create array for player bullets
     Rectangle bullet = new Rectangle(positionX, -10, 10, 10);
     //create an array for enemy bullet
-    Rectangle bulletE = new Rectangle(0, 610, 10, 10);
+    Rectangle bulletE = new Rectangle(-100, 610, 10, 10);
     //add backround image
-    BufferedImage galaxy = loadImage ("stars.gif");
+    BufferedImage galaxy = loadImage("stars.gif");
     //add array for other enemy bullets
-    
-    
     //enemy is not shooting
     boolean enemyShoot = false;
     //enemy is not attacking
@@ -76,19 +73,20 @@ public class SquareInavaders extends JComponent implements KeyListener {
         return img;
 
     }
-    
+
     //create a method to import music
-    public static void play(){
+    public static void play() {
         try {
-        String Pump = "BGM.wav";
-        InputStream in = new FileInputStream("BGM.wav");    
-        AudioStream audioStream = new AudioStream(in);
-        AudioPlayer.player.start(audioStream);
-        } catch (Exception e) {}
-        
-        
+            String Pump = "BGM.wav";
+            InputStream in = new FileInputStream("BGM.wav");
+            AudioStream audioStream = new AudioStream(in);
+            AudioPlayer.player.start(audioStream);
+        } catch (Exception e) {
+        }
+
+
     }
-    
+
     // drawing of the game happens in here
     // we use the Graphics object, g, to perform the drawing
     // NOTE: This is already double buffered!(helps with framerate/speed)
@@ -100,7 +98,7 @@ public class SquareInavaders extends JComponent implements KeyListener {
         // GAME DRAWING GOES HERE 
 
         //galaxy background
-        g.drawImage(galaxy, 0, 0,800, 600, null);
+        g.drawImage(galaxy, 0, 0, 800, 600, null);
 
         //make the blocks in the enemy array an image
         for (Rectangle block : blocks) {
@@ -188,24 +186,28 @@ public class SquareInavaders extends JComponent implements KeyListener {
 
 
             //animate enemy array
-            //select a random alien to approach player
-            
-            int numeBlocks = blocks.size();
-            int randomInt = (int) (Math.random() * numeBlocks);
-            Rectangle eBlock = blocks.get(randomInt);
-            
-                //make alien follow player
-            if (eBlock.y != 450){
-                eBlock.y +=4;
-                attack = true;
-                if (eBlock.x > player.x){
-                    eBlock.x --;                   
-                } else {
-                    eBlock.x ++;
+            //randomly select aliens to move, so it's not uniform
+            //only move if the player is alive
+            if (player.y < 601) {
+                int numeBlocks = blocks.size();
+                int randomInt = (int) (Math.random() * numeBlocks);
+                Rectangle eBlock = blocks.get(randomInt);
+
+                //make aliens follow player
+                //match player's y coordinate
+                if (eBlock.y != player.y + 600) {
+                    eBlock.y += 2;
+                    //match player's x coordinate
+                    if (eBlock.x > player.x) {
+                        eBlock.x -= 3;
+                    } else {
+                        eBlock.x += 3;
+                    }
                 }
             }
-            
-            
+
+
+
 
 
             //make player stop at edges of screen
@@ -219,9 +221,6 @@ public class SquareInavaders extends JComponent implements KeyListener {
                 moveX = 0;
             }
 
-            //make alien array move down
-            for (Rectangle block : blocks) {
-            }
             //when shoot is true
             if (shoot) {
                 //if the bullet is not off the screen
@@ -232,7 +231,7 @@ public class SquareInavaders extends JComponent implements KeyListener {
                 }
                 //bullet keeps player x coordinate
                 //bullet moves up
-                bullet.y -= 10;
+                bullet.y -= 6;
 
             }
             //if the bullet is off the screen
@@ -258,53 +257,54 @@ public class SquareInavaders extends JComponent implements KeyListener {
             }
 
             //select a random block in the enemy array
-            if (bulletE.y <= 610) {                
-                bulletE.y += 10;
-                
-                if (enemyShoot == false) {
-                    int numBlocks = blocks.size();
-                    int randInt = (int) (Math.random() * numBlocks);
-                    Rectangle aBlock = blocks.get(randInt);
-                    //when it is selected, shoot
-                    enemyShoot = true;
-                    //set the coordinates of the bullet to 
-                    //centre of the alien
-                    bulletE.y = aBlock.y;
-                    bulletE.x = aBlock.x + 15;
-                  //enemy bullet hitting player
-                    
-            if (bulletE.intersects(player)){
-                player.y +=100;
-                
-                
-                enemyShoot = true;
-                }
-             //if the bullet goes off the screen       
-                } else if (bulletE.y >= 611) {
-                    //make shooting false
-                    enemyShoot = false;
-                    //make bullet return to orginal posistion
-                    bulletE.y = 610;
-                }
+            if (bulletE.y <= 610) {
+                bulletE.y += 6;
+                //only shoot if the player is alive
+                if (player.y < 601) {
+                    if (enemyShoot == false) {
+                        int numBlocks = blocks.size();
+                        int randInt = (int) (Math.random() * numBlocks);
+                        Rectangle aBlock = blocks.get(randInt);
+                        //when it is selected, shoot
+                        enemyShoot = true;
+                        //set the coordinates of the bullet to 
+                        //centre of the alien
+                        bulletE.y = aBlock.y;
+                        bulletE.x = aBlock.x + 15;
 
+                        //enemy bullet hitting player
+                        if (bulletE.intersects(player)) {
+                            //player disappears off screen
+                            player.y += 100;
+                            enemyShoot = true;
+                        }
+                        //if the bullet goes off the screen       
+                    } else if (bulletE.y >= 611) {
+                        //make shooting false
+                        enemyShoot = false;
+                        //make bullet return to orginal posistion
+                        bulletE.y = 610;
+                    }
+
+                }
             }
-            
+
             //enemy bullet hitting player
-            if (bulletE.intersects(player)){
+            if (bulletE.intersects(player)) {
                 //player disapppears
-                player.y +=100;
+                player.y += 100;
                 //bullet goes off screen
                 bulletE.y = -90;
-                bulletE.x = 0;
-                }
-            
-           
-            
-            
-                
-            
-            
-            
+                bulletE.x = -10;
+            }
+
+
+
+
+
+
+
+
 
             // GAME LOGIC ENDS HERE 
 
@@ -357,9 +357,6 @@ public class SquareInavaders extends JComponent implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-        int key = e.getKeyCode();
-
-
     }
 
     @Override
