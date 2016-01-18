@@ -52,6 +52,8 @@ public class SquareInavaders extends JComponent implements KeyListener {
     BufferedImage ship2 = loadImage("ship2.jpg");
     //create array for player bullets
     Rectangle bullet = new Rectangle(positionX, -10, 10, 10);
+    //create an array for lives
+    ArrayList<Rectangle> lives = new ArrayList<>();
     //create an array for enemy bullet
     Rectangle bulletE = new Rectangle(-100, 610, 10, 10);
     //add backround image
@@ -61,7 +63,13 @@ public class SquareInavaders extends JComponent implements KeyListener {
     boolean enemyShoot = false;
     //enemy is not attacking
     boolean attack = false;
+    //import number pictures
+     BufferedImage n3 = loadImage("3.bmp");
+     BufferedImage n2 = loadImage("2.bmp");
+     BufferedImage n1 = loadImage("1.bmp");
     //method to import images
+   
+    
 
     public BufferedImage loadImage(String file) {
         BufferedImage img = null;
@@ -87,6 +95,19 @@ public class SquareInavaders extends JComponent implements KeyListener {
 
     }
 
+    //create method to create a countdown so game doesnt start imediately\
+    public static void countdown(){
+        for (int i = 3; i > 0; i--){
+            
+            
+            //delay 300 ms
+            try{
+                Thread.sleep(300);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
     // drawing of the game happens in here
     // we use the Graphics object, g, to perform the drawing
     // NOTE: This is already double buffered!(helps with framerate/speed)
@@ -99,7 +120,13 @@ public class SquareInavaders extends JComponent implements KeyListener {
 
         //galaxy background
         g.drawImage(galaxy, 0, 0, 800, 600, null);
-
+        
+        //draw numbers for count down
+        
+        //draw life count
+        for (Rectangle life : lives) {
+            g.drawImage (ship2, life.x, life.y, life.width, life.height, null );
+        }
         //make the blocks in the enemy array an image
         for (Rectangle block : blocks) {
             g.drawImage(alien, block.x, block.y, block.width, block.height, null);
@@ -154,6 +181,11 @@ public class SquareInavaders extends JComponent implements KeyListener {
         blocks.add(new Rectangle(360, 100, 40, 40));
         blocks.add(new Rectangle(470, 100, 40, 40));
         blocks.add(new Rectangle(580, 100, 40, 40));
+        
+        //add lives
+        lives.add(new Rectangle (730, 570, 20, 20));
+        lives.add(new Rectangle (700, 570, 20, 20));
+        lives.add(new Rectangle (670, 570, 20, 20));
 
 
         // Used to keep track of time used to draw and update the game
