@@ -64,12 +64,11 @@ public class SquareInavaders extends JComponent implements KeyListener {
     //enemy is not attacking
     boolean attack = false;
     //import number pictures
-     BufferedImage n3 = loadImage("3.bmp");
-     BufferedImage n2 = loadImage("2.bmp");
-     BufferedImage n1 = loadImage("1.bmp");
+    BufferedImage n3 = loadImage("3.bmp");
+    BufferedImage n2 = loadImage("2.bmp");
+    BufferedImage n1 = loadImage("1.bmp");
     //method to import images
-   
-    
+    long start = System.currentTimeMillis();
 
     public BufferedImage loadImage(String file) {
         BufferedImage img = null;
@@ -96,14 +95,14 @@ public class SquareInavaders extends JComponent implements KeyListener {
     }
 
     //create method to create a countdown so game doesnt start imediately\
-    public static void countdown(){
-        for (int i = 3; i > 0; i--){
-            
-            
+    public static void countdown() {
+        for (int i = 3; i > 0; i--) {
+
+
             //delay 300 ms
-            try{
+            try {
                 Thread.sleep(300);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -111,6 +110,7 @@ public class SquareInavaders extends JComponent implements KeyListener {
     // drawing of the game happens in here
     // we use the Graphics object, g, to perform the drawing
     // NOTE: This is already double buffered!(helps with framerate/speed)
+
     @Override
     public void paintComponent(Graphics g) {
         // always clear the screen first!
@@ -120,12 +120,15 @@ public class SquareInavaders extends JComponent implements KeyListener {
 
         //galaxy background
         g.drawImage(galaxy, 0, 0, 800, 600, null);
-        
+
         //draw numbers for count down
+        if (System.currentTimeMillis() / 1000 == 1){
+            g.drawImage(n2, 300, 0, 200, 280, null);
+        }
         
         //draw life count
         for (Rectangle life : lives) {
-            g.drawImage (ship2, life.x, life.y, life.width, life.height, null );
+            g.drawImage(ship2, life.x, life.y, life.width, life.height, null);
         }
         //make the blocks in the enemy array an image
         for (Rectangle block : blocks) {
@@ -181,17 +184,20 @@ public class SquareInavaders extends JComponent implements KeyListener {
         blocks.add(new Rectangle(360, 100, 40, 40));
         blocks.add(new Rectangle(470, 100, 40, 40));
         blocks.add(new Rectangle(580, 100, 40, 40));
-        
+
         //add lives
-        lives.add(new Rectangle (730, 570, 20, 20));
-        lives.add(new Rectangle (700, 570, 20, 20));
-        lives.add(new Rectangle (670, 570, 20, 20));
+        lives.add(new Rectangle(730, 570, 20, 20));
+        lives.add(new Rectangle(700, 570, 20, 20));
+        lives.add(new Rectangle(670, 570, 20, 20));
 
 
         // Used to keep track of time used to draw and update the game
         // This is used to limit the framerate later on
         long startTime;
         long deltaTime;
+
+
+        start = System.currentTimeMillis() + 3000;
 
         // the main game loop section
         // game will end if you set done = false;
@@ -203,132 +209,136 @@ public class SquareInavaders extends JComponent implements KeyListener {
             // all your game rules and move is done in here
             // GAME LOGIC STARTS HERE 
 
-            //move player left
-            if (left) {
-                moveX = -5;
-                //move player right
-            } else if (right) {
-                moveX = 5;
-                //stop player when key released  
-            } else {
-                moveX = 0;
-            }
-            //add x movements to player
-            player.x = player.x + moveX;
-
-
-            //animate enemy array
-            //randomly select aliens to move, so it's not uniform
-            //only move if the player is alive
-            if (player.y < 601) {
-                int numeBlocks = blocks.size();
-                int randomInt = (int) (Math.random() * numeBlocks);
-                Rectangle eBlock = blocks.get(randomInt);
-
-                //make aliens follow player
-                //match player's y coordinate
-                if (eBlock.y != player.y + 600) {
-                    eBlock.y += 2;
-                    //match player's x coordinate
-                    if (eBlock.x > player.x) {
-                        eBlock.x -= 3;
-                    } else {
-                        eBlock.x += 3;
-                    }
+            if (System.currentTimeMillis() > start) {
+                //move player left
+                if (left) {
+                    moveX = -5;
+                    //move player right
+                } else if (right) {
+                    moveX = 5;
+                    //stop player when key released  
+                } else {
+                    moveX = 0;
                 }
-            }
+                //add x movements to player
+                player.x = player.x + moveX;
 
 
-
-
-
-            //make player stop at edges of screen
-            //if player reaches right side
-            if (player.x + player.width > WIDTH) {
-                player.x = WIDTH - player.width;
-                moveX = 0;
-                //if player reaches left side
-            } else if (player.x < 0) {
-                player.x = 0;
-                moveX = 0;
-            }
-
-            //when shoot is true
-            if (shoot) {
-                //if the bullet is not off the screen
-                //bullet starts at player
-                if (bullet.y <= -10) {
-                    bullet.x = player.x + 15;
-                    bullet.y = player.y;
-                }
-                //bullet keeps player x coordinate
-                //bullet moves up
-                bullet.y -= 6;
-
-            }
-            //if the bullet is off the screen
-            //make shooting false so player can shoot agian
-            if (bullet.y < -9) {
-                shoot = false;
-
-            }
-
-            //intersections
-            //go through the enemy array
-            Iterator<Rectangle> it = blocks.iterator();
-            while (it.hasNext()) {
-                Rectangle block = it.next();
-                //is the bullet impacting an enemy
-                if (bullet.intersects(block)) {
-                    //make shooting to false
-                    //delete enemy
-                    shoot = false;
-                    bullet.y = -10;
-                    it.remove();
-                }
-            }
-
-            //select a random block in the enemy array
-            if (bulletE.y <= 610) {
-                bulletE.y += 6;
-                //only shoot if the player is alive
+                //animate enemy array
+                //randomly select aliens to move, so it's not uniform
+                //only move if the player is alive
                 if (player.y < 601) {
-                    if (enemyShoot == false) {
-                        int numBlocks = blocks.size();
-                        int randInt = (int) (Math.random() * numBlocks);
-                        Rectangle aBlock = blocks.get(randInt);
-                        //when it is selected, shoot
-                        enemyShoot = true;
-                        //set the coordinates of the bullet to 
-                        //centre of the alien
-                        bulletE.y = aBlock.y;
-                        bulletE.x = aBlock.x + 15;
+                    int numeBlocks = blocks.size();
+                    int randomInt = (int) (Math.random() * numeBlocks);
+                    Rectangle eBlock = blocks.get(randomInt);
 
-                        //enemy bullet hitting player
-                        if (bulletE.intersects(player)) {
-                            //player disappears off screen
-                            player.y += 100;
-                            enemyShoot = true;
+                    //make aliens follow player
+                    //match player's y coordinate
+                    if (eBlock.y != player.y + 600) {
+                        eBlock.y += 2;
+                        //match player's x coordinate
+                        if (eBlock.x > player.x) {
+                            eBlock.x -= 3;
+                        } else {
+                            eBlock.x += 3;
                         }
-                        //if the bullet goes off the screen       
-                    } else if (bulletE.y >= 611) {
-                        //make shooting false
-                        enemyShoot = false;
-                        //make bullet return to orginal posistion
-                        bulletE.y = 610;
                     }
+                }
 
+
+
+
+
+                //make player stop at edges of screen
+                //if player reaches right side
+                if (player.x + player.width > WIDTH) {
+                    player.x = WIDTH - player.width;
+                    moveX = 0;
+                    //if player reaches left side
+                } else if (player.x < 0) {
+                    player.x = 0;
+                    moveX = 0;
+                }
+
+                //when shoot is true
+                if (shoot) {
+                    //if the bullet is not off the screen
+                    //bullet starts at player
+                    if (bullet.y <= -10) {
+                        bullet.x = player.x + 15;
+                        bullet.y = player.y;
+                    }
+                    //bullet keeps player x coordinate
+                    //bullet moves up
+                    bullet.y -= 6;
+
+                }
+                //if the bullet is off the screen
+                //make shooting false so player can shoot agian
+                if (bullet.y < -9) {
+                    shoot = false;
+
+                }
+
+                //intersections
+                //go through the enemy array
+                Iterator<Rectangle> it = blocks.iterator();
+                while (it.hasNext()) {
+                    Rectangle block = it.next();
+                    //is the bullet impacting an enemy
+                    if (bullet.intersects(block)) {
+                        //make shooting to false
+                        //delete enemy
+                        shoot = false;
+                        bullet.y = -10;
+                        it.remove();
+                    }
+                }
+
+                //select a random block in the enemy array
+
+                if (bulletE.y <= 610) {
+                    bulletE.y += 6;
+                    //only shoot if the player is alive
+                    if (player.y < 601) {
+                        if (enemyShoot == false) {
+                            int numBlocks = blocks.size();
+                            int randInt = (int) (Math.random() * numBlocks);
+                            Rectangle aBlock = blocks.get(randInt);
+                            //when it is selected, shoot
+                            enemyShoot = true;
+                            //set the coordinates of the bullet to 
+                            //centre of the alien
+                            bulletE.y = aBlock.y;
+                            bulletE.x = aBlock.x + 15;
+
+                            //enemy bullet hitting player
+                            if (bulletE.intersects(player)) {
+                                //player disappears off screen
+                                player.y += 100;
+                                enemyShoot = true;
+                            }
+                            //if the bullet goes off the screen       
+                        } else if (bulletE.y >= 611) {
+                            //make shooting false
+                            enemyShoot = false;
+                            //make bullet return to orginal posistion
+                            bulletE.y = 610;
+                        }
+
+                    }
+                }
+
+                //enemy bullet hitting player
+                if (bulletE.intersects(player)) {
+                    //player disapppears
+                    player.y += 100;
+                    //bullet goes off screen
+                    bulletE.y = -90;
+                    bulletE.x = -10;
                 }
             }
 
-            //enemy bullet hitting player
-            if (bulletE.intersects(player)) {
-                //player disapppears
-                player.y += 100;
-                //bullet goes off screen
-                bulletE.y = -90;
-                bulletE.x = -10;
-            }
 
 
 
