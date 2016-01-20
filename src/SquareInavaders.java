@@ -44,6 +44,8 @@ public class SquareInavaders extends JComponent implements KeyListener {
     int moveY = 0;
     //bullet posistion variable   
     int positionX = player.x + 15;
+    //number of lives you start with
+    int life = 3;
     //create rectangle array list for the enemy squares
     ArrayList<Rectangle> blocks = new ArrayList<>();
     //add image for array (enemy)
@@ -122,10 +124,21 @@ public class SquareInavaders extends JComponent implements KeyListener {
         g.drawImage(galaxy, 0, 0, 800, 600, null);
 
         //draw numbers for count down
-        if (System.currentTimeMillis() / 1000 == 1){
-            g.drawImage(n2, 300, 0, 200, 280, null);
+        //if one second has passed
+        if (System.currentTimeMillis() < start) {
+            if ((start - System.currentTimeMillis()) / 1000 == 2) {
+                //draw the number one
+                g.drawImage(n3, 300, 200, 200, 280, null);
+            }
+            if ((start - System.currentTimeMillis()) / 1000 == 1) {
+                //draw the number one
+                g.drawImage(n2, 300, 200, 200, 280, null);
+            }
+            if ((start - System.currentTimeMillis()) / 1000 == 0) {
+                //draw the number one
+                g.drawImage(n1, 300, 200, 200, 280, null);
+            }
         }
-        
         //draw life count
         for (Rectangle life : lives) {
             g.drawImage(ship2, life.x, life.y, life.width, life.height, null);
@@ -298,7 +311,7 @@ public class SquareInavaders extends JComponent implements KeyListener {
                 //select a random block in the enemy array
 
                 if (bulletE.y <= 610) {
-                    bulletE.y += 6;
+                    bulletE.y += 15;
                     //only shoot if the player is alive
                     if (player.y < 601) {
                         if (enemyShoot == false) {
@@ -331,19 +344,33 @@ public class SquareInavaders extends JComponent implements KeyListener {
 
                 //enemy bullet hitting player
                 if (bulletE.intersects(player)) {
-                    //player disapppears
-                    player.y += 100;
+                    //take away a life
+                    life--;
                     //bullet goes off screen
                     bulletE.y = -90;
                     bulletE.x = -10;
+                    //if there are no more lives
+                    if (life == 0) {
+                        //player disapppears
+                        player.y += 100;
+
+                    }
                 }
+
+
+
+                //take away lives
+                Iterator<Rectangle> impact = lives.iterator();
+                
+            
+
+                //if all of the aliens are dead
+                int numberOfAliens = blocks.size();
+                if (numberOfAliens == 0) {
+                }
+
+
             }
-
-
-
-
-
-
 
 
 
