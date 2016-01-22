@@ -37,6 +37,8 @@ public class SquareInavaders extends JComponent implements KeyListener {
     //moving player
     boolean left = false;
     boolean right = false;
+    //playing music
+    boolean music = false;
     //shooting
     boolean shoot = false;
     //player position varibles
@@ -215,8 +217,12 @@ public class SquareInavaders extends JComponent implements KeyListener {
 
             // all your game rules and move is done in here
             // GAME LOGIC STARTS HERE 
-
+            
             if (System.currentTimeMillis() > start) {
+                music = true;
+                if (music = true){
+                    
+                }
                 //move player left
                 if (left) {
                     moveX = -5;
