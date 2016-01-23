@@ -63,7 +63,7 @@ public class SquareInavaders extends JComponent implements KeyListener {
     //add a you win image
     BufferedImage win = loadImage("youWin.PNG");
     //add backround image
-    BufferedImage galaxy = loadImage("stars.gif");
+    BufferedImage galaxy = loadImage("stars.jpg");
     //enemy is not shooting
     boolean enemyShoot = false;
     //enemy is not attacking
@@ -100,7 +100,6 @@ public class SquareInavaders extends JComponent implements KeyListener {
         } catch (Exception e) {
         }
 
-
     }
 
     // drawing of the game happens in here
@@ -112,7 +111,6 @@ public class SquareInavaders extends JComponent implements KeyListener {
         g.clearRect(0, 0, WIDTH, HEIGHT);
 
         // GAME DRAWING GOES HERE 
-
         //galaxy background
         g.drawImage(galaxy, 0, 0, 800, 600, null);
 
@@ -157,9 +155,6 @@ public class SquareInavaders extends JComponent implements KeyListener {
         //draw the enemy bulllet
         g.fillRect(bulletE.x, bulletE.y, 10, 10);
 
-
-
-
         //draw the final bosses off the screen
         for (Rectangle bosses : finalBoss) {
             g.drawImage(boss, bosses.x, bosses.y, bosses.width, bosses.height, null);
@@ -173,7 +168,6 @@ public class SquareInavaders extends JComponent implements KeyListener {
 
         //add enemy squares in three rows
         //start at the top of the screen
-
         //first row
         blocks.add(new Rectangle(30, 0, 40, 40));
         blocks.add(new Rectangle(140, 0, 40, 40));
@@ -212,7 +206,6 @@ public class SquareInavaders extends JComponent implements KeyListener {
         long startTime;
         long deltaTime;
 
-
         start = System.currentTimeMillis() + 3000;
 
         // the main game loop section
@@ -224,13 +217,12 @@ public class SquareInavaders extends JComponent implements KeyListener {
 
             // all your game rules and move is done in here
             // GAME LOGIC STARTS HERE 
-
             int numberOfAliens = blocks.size();
 
             if (System.currentTimeMillis() > start) {
                 music = true;
-                if (music = true){
-                    
+                if (music = true) {
+
                 }
                 //move player left
                 if (left) {
@@ -244,7 +236,6 @@ public class SquareInavaders extends JComponent implements KeyListener {
                 }
                 //add x movements to player
                 player.x = player.x + moveX;
-
 
                 //animate enemy array
                 //randomly select aliens to move, so it's not uniform
@@ -268,10 +259,6 @@ public class SquareInavaders extends JComponent implements KeyListener {
                         }
                     }
                 }
-
-
-
-
 
                 //make player stop at edges of screen
                 //if player reaches right side
@@ -384,12 +371,7 @@ public class SquareInavaders extends JComponent implements KeyListener {
                     lives.get(0).y += 90;
                 }
 
-
-
-
-
                 //if all of the aliens are dead
-
                 if (numberOfAliens == 0) {
                     bulletE.y = 609;
                     //bring out the bosses
@@ -404,26 +386,20 @@ public class SquareInavaders extends JComponent implements KeyListener {
                     int randomBoss = (int) (Math.random() * numBosses);
                     if (numBosses < 0) {
                         Rectangle oneBoss = finalBoss.get(randomBoss);
-                        if (bulletE.y < 610){
-                        enemyShoot = true;
-                        bulletE.y = oneBoss.y;
-                        bulletE.x = oneBoss.x - 50;
-                        bulletE.y += 6;
+                        if (bulletE.y < 610) {
+                            enemyShoot = true;
+                            bulletE.y = oneBoss.y;
+                            bulletE.x = oneBoss.x - 50;
+                            bulletE.y += 6;
+                        }
                     }
+
                 }
-
-
-            }}
-
-
-
+            }
 
             // GAME LOGIC ENDS HERE 
-
             // update the drawing (calls paintComponent)
             repaint();
-
-
 
             // SLOWS DOWN THE GAME BASED ON THE FRAMERATE ABOVE
             // USING SOME SIMPLE MATH
