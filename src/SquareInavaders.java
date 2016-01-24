@@ -52,6 +52,8 @@ public class SquareInavaders extends JComponent implements KeyListener {
     ArrayList<Rectangle> blocks = new ArrayList<>();
     //add image for array (enemy)
     BufferedImage alien = loadImage("alien.png");
+    //create array for boss bullets
+    ArrayList<Rectangle> bossBullet = new ArrayList<>();
     //add image for player (ship)
     BufferedImage ship2 = loadImage("ship2.jpg");
     //create array for player bullets
@@ -93,8 +95,8 @@ public class SquareInavaders extends JComponent implements KeyListener {
     //create a method to play music
     public static void play() {
         try {
-            String Pump = "BGM.wav";
-            InputStream in = new FileInputStream("BGM.wav");
+            String Pump = "hit.wav";
+            InputStream in = new FileInputStream("hit.wav");
             AudioStream audioStream = new AudioStream(in);
             AudioPlayer.player.start(audioStream);
         } catch (Exception e) {
@@ -149,7 +151,7 @@ public class SquareInavaders extends JComponent implements KeyListener {
             g.fillRect(bullet.x, bullet.y, 10, 10);
 
         }
-        //draw the enemy bullet of the screen
+        //draw the enemy bullet off the screen
         //set color of enemy bullet to red
         g.setColor(Color.red);
         //draw the enemy bulllet
@@ -158,6 +160,13 @@ public class SquareInavaders extends JComponent implements KeyListener {
         //draw the final bosses off the screen
         for (Rectangle bosses : finalBoss) {
             g.drawImage(boss, bosses.x, bosses.y, bosses.width, bosses.height, null);
+        }
+
+        //draw the bullets for the final bosses off the screen
+        //draw green bullets
+        g.setColor(Color.green);
+        for (Rectangle bulletB : bossBullet) {
+            g.drawRect(bulletB.x, bulletB.y, bulletB.width, bulletB.height);
         }
         // GAME DRAWING ENDS HERE
     }
@@ -200,6 +209,12 @@ public class SquareInavaders extends JComponent implements KeyListener {
         //create bosses
         finalBoss.add(new Rectangle(200, -200, 100, 70));
         finalBoss.add(new Rectangle(500, -200, 100, 70));
+
+        //create bullets for bosses, two for both
+        bossBullet.add(new Rectangle(200, -40, 10, 10));
+        bossBullet.add(new Rectangle(200, -40, 10, 10));
+        bossBullet.add(new Rectangle(200, -40, 10, 10));
+        bossBullet.add(new Rectangle(200, -40, 10, 10));
 
         // Used to keep track of time used to draw and update the game
         // This is used to limit the framerate later on
@@ -250,6 +265,15 @@ public class SquareInavaders extends JComponent implements KeyListener {
                         //match player's y coordinate
                         if (eBlock.y != player.y + 600) {
                             eBlock.y += 2;
+                            //if the aliens go past the player
+                            //player loses a life
+                            if (eBlock.y > 600) {
+                                life = life - 1;
+                                //if player has no more lives, disappear
+                                if (life == 0) {
+                                    player.y += 100;
+                                }
+                            }
                             //match player's x coordinate
                             if (eBlock.x > player.x) {
                                 eBlock.x -= 3;
@@ -303,13 +327,14 @@ public class SquareInavaders extends JComponent implements KeyListener {
                         shoot = false;
                         bullet.y = -10;
                         it.remove();
+                        play();
                     }
                 }
 
                 //select a random block in the enemy array
                 if (bulletE.y <= 610) {
                     //enemy bullet speed
-                    bulletE.y += 6;
+                    bulletE.y += 7;
                     //only shoot if the player is alive
                     if (player.y < 601) {
                         if (enemyShoot == false) {
@@ -373,7 +398,7 @@ public class SquareInavaders extends JComponent implements KeyListener {
 
                 //if all of the aliens are dead
                 if (numberOfAliens == 0) {
-                    bulletE.y = 609;
+                    
                     //bring out the bosses
                     //go through boss array and move them down
                     for (Rectangle bosses : finalBoss) {
@@ -381,19 +406,15 @@ public class SquareInavaders extends JComponent implements KeyListener {
                             bosses.y += 5;
                         }
                     }
+                    
+                    
                     //make boss shoot using randomizer
                     int numBosses = finalBoss.size();
                     int randomBoss = (int) (Math.random() * numBosses);
                     if (numBosses < 0) {
                         Rectangle oneBoss = finalBoss.get(randomBoss);
-                        if (bulletE.y < 610) {
-                            enemyShoot = true;
-                            bulletE.y = oneBoss.y;
-                            bulletE.x = oneBoss.x - 50;
-                            bulletE.y += 6;
-                        }
+                        oneBoss.y ++;
                     }
-
                 }
             }
 
