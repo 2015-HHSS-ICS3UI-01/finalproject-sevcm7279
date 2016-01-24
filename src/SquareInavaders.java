@@ -64,6 +64,8 @@ public class SquareInavaders extends JComponent implements KeyListener {
     Rectangle bulletE = new Rectangle(-100, 610, 10, 10);
     //add a you win image
     BufferedImage win = loadImage("youWin.PNG");
+    //add you lose image
+    BufferedImage lose = loadImage("gameOver.jpg");
     //add backround image
     BufferedImage galaxy = loadImage("stars.jpg");
     //enemy is not shooting
@@ -195,6 +197,17 @@ public class SquareInavaders extends JComponent implements KeyListener {
         g.setColor(Color.green);
         //draw the enemy bulllet
         g.fillRect(bulletE.x, bulletE.y, 10, 10);
+        
+        //if the player dies draw you lose screen
+        if (life == 0){
+            g.drawImage(lose, 0, 0, 800, 600, null);
+        }
+        
+        //if there are no more aliens, draw you win
+        int alienCount = blocks.size();
+        if (alienCount == 0 ){
+            g.drawImage(win, 0, 0, 1500, 1400, null);
+        }
 
         // GAME DRAWING ENDS HERE
     }
@@ -234,6 +247,7 @@ public class SquareInavaders extends JComponent implements KeyListener {
         lives.add(new Rectangle(700, 570, 20, 20));
         lives.add(new Rectangle(670, 570, 20, 20));
         
+        //play background music
         BGM();
 
 
