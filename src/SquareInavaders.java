@@ -367,7 +367,7 @@ public class SquareInavaders extends JComponent implements KeyListener {
                 //select a random block in the enemy array to shoot
                 if (bulletE.y <= 610) {
                     //enemy bullet speed
-                    bulletE.y += 9;
+                    bulletE.y += 12;
                     //only shoot if the player is alive
                     if (player.y < 601) {
                         if (enemyShoot == false) {
