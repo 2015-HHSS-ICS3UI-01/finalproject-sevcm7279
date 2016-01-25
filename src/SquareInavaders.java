@@ -67,7 +67,7 @@ public class SquareInavaders extends JComponent implements KeyListener {
     //add you lose image
     BufferedImage lose = loadImage("gameOver.jpg");
     //add backround image
-    BufferedImage galaxy = loadImage("stars.jpg");
+    BufferedImage galaxy = loadImage("stars.gif");
     //enemy is not shooting
     boolean enemyShoot = false;
     //enemy is not attacking
